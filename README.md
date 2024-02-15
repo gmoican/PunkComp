@@ -4,14 +4,16 @@
 <img src="demo.jpg" width="70%">
 
 ## Introduction
-This is a simple vst3/au audio compressor plugin made with [JUCE](https://juce.com/) that I build to introduce myself in the JUCE framework. The functionality is inspired by the Koji Comp by Suhr, although it doesn't sound the same (obviously). The project was mostly used to further my understanding and knowledge of digital signal processing and digital audio effects.
-I intend to do a demostration soon enough in my [YouTube channel](https://www.youtube.com/channel/UCe3BPM0SbPYuTHAOrixmqsw).
+This is a simple vst3/au audio compressor plugin made with <a href="https://juce.com/" target="_blank">JUCE</a> that I build to introduce myself in the JUCE framework. The functionality is inspired by the Koji Comp by Suhr, although it doesn't sound the same (obviously). The project was mostly used to further my understanding and knowledge of digital signal processing and digital audio effects.
+I intend to do a demostration soon enough in my <a href="https://www.youtube.com/channel/UCe3BPM0SbPYuTHAOrixmqsw" target="_blank">YouTube channel</a>.
 
 ## Features
 - Input Gain (from -18 up to 18 dB).
 - Output Gain (from -18 up to 18 dB).
 - Compressor dial: It adjust the threshold from 0 to -40dB.
 - Attack time (from 1 up to 100ms).
+- Fixed release time of 50ms.
+- Fixed ratio of 4:1.
 - Mix between dry and wet signal.
 - Voice switch: This switch offers the following three voicings.
     - Left: Offers a boost to the upper midrange frequencies to bring out the attack in your picking.
