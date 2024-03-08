@@ -21,6 +21,7 @@ I intend to do a demostration soon enough in my <a href="https://www.youtube.com
     - Right: Offers a boost in the upper midrange and treble frequencies – for a smooth, glassy, top-end sweetness.
 - Gain reduction metering.
  
- ## Things I want to improve
+ ## TODO
+ - Migrate project to CMake.
  - The compressor implementation uses the JUCE built-in Compressor class. I want to program my own Compressor class to better imitate the behaviour of the Koji Comp.
  - The voicings frequencies and gain factors should be fine tuned.

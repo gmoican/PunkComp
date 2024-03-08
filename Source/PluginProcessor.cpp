@@ -193,6 +193,7 @@ void PunkCompProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     spec.sampleRate = sampleRate;
     
     inputLevel.prepare(spec);
+    inputLevel.setRampDurationSeconds(0.1f);
     
     comp.prepare(spec);
     comp.setRatio(compressionRatio);
@@ -206,6 +207,7 @@ void PunkCompProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     eq.reset();
     
     outputLevel.prepare(spec);
+    outputLevel.setRampDurationSeconds(0.1f);
     
     gainReduction.reset(sampleRate, 0.5);
     gainReduction.setCurrentAndTargetValue(0.0f);

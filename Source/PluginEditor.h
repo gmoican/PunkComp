@@ -29,7 +29,7 @@ public:
     
     //=================== PARAMETER MANIPULATION ===================================
     void setSliderComponent(juce::Slider& slider, std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>& sliderAttachment, juce::String paramName, juce::String style);
-    void setToggleComponent(juce::ToggleButton& slider, std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment>& sliderAttachment, juce::String paramName);
+    void setToggleComponent(juce::ToggleButton& button, std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment>& buttonAttachment, juce::String paramName);
     juce::AffineTransform knobRotation(float radians, float posX, float posY);
     
     //=================== GAIN REDUCTION UPDATER ===================================
@@ -66,11 +66,7 @@ private:
     juce::Image switch1;
     juce::Image switch2;
     
-    juce::Image knobInputImage;
-    juce::Image knobOutputImage;
-    juce::Image knobCompImage;
-    juce::Image knobAttackImage;
-    juce::Image knobMixImage;
+    juce::Image knobImage;
     
     // Extra
     juce::Gui::GainReductionMeter grMeter;

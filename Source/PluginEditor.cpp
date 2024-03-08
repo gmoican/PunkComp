@@ -32,11 +32,7 @@ PunkCompEditor::PunkCompEditor (PunkCompProcessor& p)
     switch1 = juce::ImageCache::getFromMemory(BinaryData::switch1_png, BinaryData::switch1_pngSize);
     switch2 = juce::ImageCache::getFromMemory(BinaryData::switch2_png, BinaryData::switch2_pngSize);
     //
-    knobInputImage = juce::ImageCache::getFromMemory(BinaryData::knob_png, BinaryData::knob_pngSize);
-    knobOutputImage = juce::ImageCache::getFromMemory(BinaryData::knob_png, BinaryData::knob_pngSize);
-    knobCompImage = juce::ImageCache::getFromMemory(BinaryData::knob_png, BinaryData::knob_pngSize);
-    knobAttackImage = juce::ImageCache::getFromMemory(BinaryData::knob_png, BinaryData::knob_pngSize);
-    knobMixImage = juce::ImageCache::getFromMemory(BinaryData::knob_png, BinaryData::knob_pngSize);
+    knobImage = juce::ImageCache::getFromMemory(BinaryData::knob_png, BinaryData::knob_pngSize);
     
     // =========== GAIN REDUCTION METER ====================
     addAndMakeVisible(grMeter);
@@ -106,12 +102,11 @@ void PunkCompEditor::paint (juce::Graphics& g)
     float mixRadians = ((mixKnob.getValue() - 10.0f) / (90.0f) * 300.0f - 150.0f) * DEG2RADS;
     
     // ========== Draw parameter knobs ==================
-    g.drawImageTransformed(knobInputImage, knobRotation(inputRadians, 25, 30));
-    g.drawImageTransformed(knobOutputImage, knobRotation(outputRadians, 258, 30));
-    g.drawImageTransformed(knobCompImage, knobRotation(thresRadians, 25, 168));
-    g.drawImageTransformed(knobAttackImage, knobRotation(attackRadians, 140, 168));
-    g.drawImageTransformed(knobMixImage, knobRotation(mixRadians, 258, 168));
-        
+    g.drawImageTransformed(knobImage, knobRotation(inputRadians, 25, 30));
+    g.drawImageTransformed(knobImage, knobRotation(outputRadians, 258, 30));
+    g.drawImageTransformed(knobImage, knobRotation(thresRadians, 25, 168));
+    g.drawImageTransformed(knobImage, knobRotation(attackRadians, 140, 168));
+    g.drawImageTransformed(knobImage, knobRotation(mixRadians, 258, 168));
 }
 
 void PunkCompEditor::resized()
