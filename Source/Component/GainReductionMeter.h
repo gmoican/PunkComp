@@ -19,9 +19,10 @@ namespace juce::Gui
             g.setColour(juce::Colours::black);
             g.fillRoundedRectangle(bounds, 15.0f);
             
+            // FIXME: Does it represent GR accuretly?
             // Level colour
             g.setGradientFill(gradient);
-            // Map level from {0, 12} to {0, width}
+            // Map level from {0, 20} to {0, width}
             const auto scaledX = juce::jmap(level, 0.0f, 20.0f, 0.0f, static_cast<float>(getWidth()));
             g.fillRoundedRectangle(bounds.removeFromLeft(scaledX), 15.0f);
         }

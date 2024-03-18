@@ -14,24 +14,20 @@ PunkCompEditor::PunkCompEditor (PunkCompProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
     // ================= PARAMETERS ====================
-    setSliderComponent(inputKnob, inputKnobAttachment, "INPUT", "Rot");
     setSliderComponent(voiceSwitch, voiceSwitchAttachment, "VOICE", "Lin");
-    setSliderComponent(outputKnob, outputKnobAttachment, "LEVEL", "Rot");
-
-    setSliderComponent(thresKnob, thresKnobAttachment, "COMP", "Rot");
+    
+    setSliderComponent(compKnob, compKnobAttachment, "COMP", "Rot");
+    setSliderComponent(levelKnob, levelKnobAttachment, "LEVEL", "Rot");
+    
     setSliderComponent(attackKnob, attackKnobAttachment, "ATTACK", "Rot");
     setSliderComponent(mixKnob, mixKnobAttachment, "MIX", "Rot");
 
     setToggleComponent(onToggle, onToggleAttachment, "ONOFF");
 
     // ================= ASSETS =======================
-    backgroundOn = juce::ImageCache::getFromMemory(BinaryData::backgroundOn_png, BinaryData::backgroundOn_pngSize);
-    backgroundOff = juce::ImageCache::getFromMemory(BinaryData::backgroundOff_png, BinaryData::backgroundOff_pngSize);
-    //
-    switch0 = juce::ImageCache::getFromMemory(BinaryData::switch0_png, BinaryData::switch0_pngSize);
-    switch1 = juce::ImageCache::getFromMemory(BinaryData::switch1_png, BinaryData::switch1_pngSize);
-    switch2 = juce::ImageCache::getFromMemory(BinaryData::switch2_png, BinaryData::switch2_pngSize);
-    //
+    background = juce::ImageCache::getFromMemory(BinaryData::background_png, BinaryData::background_pngSize);
+    lightOff = juce::ImageCache::getFromMemory(BinaryData::lightOff_png, BinaryData::lightOff_pngSize);
+    switchTop = juce::ImageCache::getFromMemory(BinaryData::switchTop_png, BinaryData::switchTop_pngSize);
     knobImage = juce::ImageCache::getFromMemory(BinaryData::knob_png, BinaryData::knob_pngSize);
     
     // =========== GAIN REDUCTION METER ====================
@@ -40,7 +36,7 @@ PunkCompEditor::PunkCompEditor (PunkCompProcessor& p)
     
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (360, 675);
+    setSize (180, 320);
 }
 
 PunkCompEditor::~PunkCompEditor()
@@ -56,27 +52,26 @@ void PunkCompEditor::timerCallback()
 //==============================================================================
 void PunkCompEditor::paint (juce::Graphics& g)
 {
-    // Assets loading was here before
+    g.drawImageWithin(background, 0, 0, getWidth(), getHeight(), juce::RectanglePlacement::stretchToFit);
         
     // =========== On/Off state ====================
-    if (onToggle.getToggleState())
-    {
-        g.drawImageWithin(backgroundOn, 0, 0, getWidth(), getHeight(), juce::RectanglePlacement::stretchToFit);
-    } else
-    {
-        g.drawImageWithin(backgroundOff, 0, 0, getWidth(), getHeight(), juce::RectanglePlacement::stretchToFit);
+    if (!onToggle.getToggleState()) {
+        juce::AffineTransform t;
+        t = t.scaled(0.485f);
+        t = t.translated(75.5, 144.5);
+        g.drawImageTransformed(lightOff, t);
     }
     
     // =========== Switch state ====================
     switch((int) voiceSwitch.getValue()){
         case 0:
-            g.drawImageAt(switch0, 140, 30);
+            g.drawImageTransformed(switchTop, imageTransforms(0.5f, 72, 14));
             break;
         case 1:
-            g.drawImageAt(switch1, 140, 30);
+            g.drawImageTransformed(switchTop, imageTransforms(0.5f, 82, 14));
             break;
         case 2:
-            g.drawImageAt(switch2, 140, 30);
+            g.drawImageTransformed(switchTop, imageTransforms(0.5f, 92, 14));
             break;
             
         default:
@@ -84,16 +79,15 @@ void PunkCompEditor::paint (juce::Graphics& g)
     };
     
     // ========== Parameter knobs angle in radians ==================
-    // Input/Output knob mapping function: y = (x-A)/(B-A) * (D-C) + C
-    // x = {A, B} = {-18.0, 18.0}
-    // y = {C, D} = {-150, 150} * PI / 180
-    float inputRadians = ((inputKnob.getValue() + 18.0f) / (36.0f) * 300.0f - 150.0f) * DEG2RADS;
-    float outputRadians = ((outputKnob.getValue() + 18.0f) / (36.0f) * 300.0f - 150.0f) * DEG2RADS;
-    
     // Comp knob mapping function: y = (x-A)/(B-A) * (D-C) + C
     // x = {A, B} = {0.0, 10.0}
     // y = {C, D} = {-150, 150} * PI / 180
-    float thresRadians = ((thresKnob.getValue() / 10.0f) * 300.0f - 150.0f) * DEG2RADS;
+    float compRadians = ((compKnob.getValue() / 10.0f) * 300.0f - 150.0f) * DEG2RADS;
+    
+    // Output knob mapping function: y = (x-A)/(B-A) * (D-C) + C
+    // x = {A, B} = {-18.0, 18.0}
+    // y = {C, D} = {-150, 150} * PI / 180
+    float levelRadians = ((levelKnob.getValue() + 18.0f) / (36.0f) * 300.0f - 150.0f) * DEG2RADS;
     
     // Attack/Mix mapping function: y = (x-A)/(B-A) * (D-C) + C
     // x = {A, B} = {1.0, 100.0}
@@ -102,30 +96,28 @@ void PunkCompEditor::paint (juce::Graphics& g)
     float mixRadians = ((mixKnob.getValue() - 10.0f) / (90.0f) * 300.0f - 150.0f) * DEG2RADS;
     
     // ========== Draw parameter knobs ==================
-    g.drawImageTransformed(knobImage, knobRotation(inputRadians, 25, 30));
-    g.drawImageTransformed(knobImage, knobRotation(outputRadians, 258, 30));
-    g.drawImageTransformed(knobImage, knobRotation(thresRadians, 25, 168));
-    g.drawImageTransformed(knobImage, knobRotation(attackRadians, 140, 168));
-    g.drawImageTransformed(knobImage, knobRotation(mixRadians, 258, 168));
+    g.drawImageTransformed(knobImage, knobRotation(compRadians, 23.5, 23));
+    g.drawImageTransformed(knobImage, knobRotation(levelRadians, 112.5, 23));
+    g.drawImageTransformed(knobImage, knobRotation(attackRadians, 23.5, 91));
+    g.drawImageTransformed(knobImage, knobRotation(mixRadians, 112.5, 91));
 }
 
 void PunkCompEditor::resized()
 {
     // Upper row
-    inputKnob.setBounds(25, 30, 80, 100);
-    voiceSwitch.setBounds(140, 30, 80, 80);
-    outputKnob.setBounds(260, 30, 80, 80);
+    voiceSwitch.setBounds(74, 16, 32, 14);
+    compKnob.setBounds(24, 23, 46, 46);
+    levelKnob.setBounds(113, 23, 46, 46);
     
     // Bottom row
-    thresKnob.setBounds(25, 170, 80, 80);
-    attackKnob.setBounds(140, 170, 80, 80);
-    mixKnob.setBounds(260, 170, 80, 80);
+    attackKnob.setBounds(24, 91, 46, 46);
+    mixKnob.setBounds(113, 91, 46, 46);
     
     // Gain reduction meter
-    grMeter.setBounds(49, 334, 258, 24);
+    grMeter.setBounds(3, 177, 173, 16);
     
     // OnOff
-    onToggle.setBounds(165, 560, 80, 80);
+    onToggle.setBounds(65, 240, 50, 50);
 }
 
 void PunkCompEditor::setSliderComponent(juce::Slider &slider, std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> &sliderAttachment, juce::String paramName, juce::String style){
@@ -150,8 +142,15 @@ void PunkCompEditor::setToggleComponent(juce::ToggleButton& button, std::unique_
 
 juce::AffineTransform PunkCompEditor::knobRotation(float radians, float posX, float posY){
     juce::AffineTransform t;
-    t = t.rotated(radians, 34.5f, 34.0f);
-    t = t.scaled(1.2f);
+    t = t.rotated(radians, 46.0f, 46.0f);
+    t = t.scaled(0.48f);
+    t = t.translated(posX, posY);
+    return t;
+}
+
+juce::AffineTransform PunkCompEditor::imageTransforms(float scaleFactor, float posX, float posY) {
+    juce::AffineTransform t;
+    t = t.scaled(scaleFactor);
     t = t.translated(posX, posY);
     return t;
 }

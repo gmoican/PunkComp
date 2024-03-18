@@ -6,15 +6,11 @@
               pluginDesc="PunkComp" pluginManufacturer="punkarra4">
   <MAINGROUP id="hfkdCW" name="PunkComp">
     <GROUP id="{941B4919-7813-E5EB-B098-DA0F00A888C6}" name="Assets">
-      <FILE id="o5ybLY" name="backgroundOff.png" compile="0" resource="1"
-            file="Source/Assets/backgroundOff.png"/>
+      <FILE id="nKSkfZ" name="background.png" compile="0" resource="1" file="Source/Assets/background.png"/>
       <FILE id="wffvz4" name="grMeter.png" compile="0" resource="1" file="Source/Assets/grMeter.png"/>
-      <FILE id="pwdhWA" name="backgroundOn.png" compile="0" resource="1"
-            file="Source/Assets/backgroundOn.png"/>
       <FILE id="fJ3WXf" name="knob.png" compile="0" resource="1" file="Source/Assets/knob.png"/>
-      <FILE id="c0Qsl4" name="switch0.png" compile="0" resource="1" file="Source/Assets/switch0.png"/>
-      <FILE id="rF4Ju0" name="switch1.png" compile="0" resource="1" file="Source/Assets/switch1.png"/>
-      <FILE id="HVeCR9" name="switch2.png" compile="0" resource="1" file="Source/Assets/switch2.png"/>
+      <FILE id="fQPSjM" name="lightOff.png" compile="0" resource="1" file="Source/Assets/lightOff.png"/>
+      <FILE id="IoZ7hk" name="switchTop.png" compile="0" resource="1" file="Source/Assets/switchTop.png"/>
     </GROUP>
     <GROUP id="{5FFE9FD3-C9C6-B529-C396-84F015D825B9}" name="Source">
       <GROUP id="{B5BA68DF-F1E7-0F1D-1C81-A0B4B8F6743C}" name="Component">

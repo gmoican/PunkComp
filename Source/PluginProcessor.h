@@ -10,7 +10,6 @@
 
 #include <JuceHeader.h>
 
-#define DEFAULT_INPUT 0.0f
 #define DEFAULT_OUTPUT 0.0f
 #define DEFAULT_COMP 5.0f
 #define DEFAULT_ATTACK 30.0f
@@ -69,9 +68,8 @@ public:
     
     // Updaters
     void updateOnOff();
-    void updateInput();
     void updateOutput();
-    void updateThreshold();
+    void updateComp();
     void updateAttack();
     void updateMix();
     void updateVoice();
@@ -92,7 +90,7 @@ private:
     float attackTime;
     Mix dryWetMix;
     int voice;
-    Gain inputLevel, outputLevel;
+    Gain outputLevel;
     bool on;
     
     // Hidden compressor parameters

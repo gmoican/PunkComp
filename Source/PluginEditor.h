@@ -31,17 +31,15 @@ public:
     void setSliderComponent(juce::Slider& slider, std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>& sliderAttachment, juce::String paramName, juce::String style);
     void setToggleComponent(juce::ToggleButton& button, std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment>& buttonAttachment, juce::String paramName);
     juce::AffineTransform knobRotation(float radians, float posX, float posY);
+    juce::AffineTransform imageTransforms(float scaleFactor, float posX, float posY);
     
     //=================== GAIN REDUCTION UPDATER ===================================
     void timerCallback() override;
 
 private:
     // Parameters
-    juce::Slider inputKnob;
-    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> inputKnobAttachment;
-    
-    juce::Slider thresKnob;
-    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> thresKnobAttachment;
+    juce::Slider compKnob;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> compKnobAttachment;
     
     juce::Slider attackKnob;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> attackKnobAttachment;
@@ -52,20 +50,16 @@ private:
     juce::Slider mixKnob;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> mixKnobAttachment;
     
-    juce::Slider outputKnob;
-    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> outputKnobAttachment;
+    juce::Slider levelKnob;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> levelKnobAttachment;
     
     juce::ToggleButton onToggle;
     std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> onToggleAttachment;
     
     // Assets - Background, knobs and switch
-    juce::Image backgroundOn;
-    juce::Image backgroundOff;
-    
-    juce::Image switch0;
-    juce::Image switch1;
-    juce::Image switch2;
-    
+    juce::Image background;
+    juce::Image lightOff;
+    juce::Image switchTop;
     juce::Image knobImage;
     
     // Extra

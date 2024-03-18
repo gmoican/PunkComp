@@ -96,9 +96,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout PunkCompProcessor::createPar
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
         
     params.push_back(std::make_unique<juce::AudioParameterBool>("ONOFF", "On/Off", true));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("INPUT", "Input Gain", juce::NormalisableRange<float>(-18.0f, 18.0f, 0.1f), DEFAULT_INPUT, "dB"));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("LEVEL", "Output Level", juce::NormalisableRange<float>(-18.0f, 18.0f, 0.1f), DEFAULT_OUTPUT, "dB"));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("COMP", "Compression", juce::NormalisableRange<float>(0.0f, 10.0f, 0.1f), DEFAULT_COMP, ""));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("LEVEL", "Output Level", juce::NormalisableRange<float>(-18.0f, 18.0f, 0.1f), DEFAULT_OUTPUT, "dB"));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("ATTACK", "Attack", juce::NormalisableRange<float>(1.0f, 100.0f, 0.1f), DEFAULT_ATTACK, "ms"));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("MIX", "Mix", juce::NormalisableRange<float>(10.0f, 100.0f, 0.1f), DEFAULT_MIX, "%"));
     
@@ -120,13 +119,6 @@ void PunkCompProcessor::updateOnOff()
     on = ONOFF->load();
 }
 
-void PunkCompProcessor::updateInput()
-{
-    auto IN = state.getRawParameterValue("INPUT");
-    float val = IN->load();
-    inputLevel.setGainDecibels(val);
-}
-
 void PunkCompProcessor::updateOutput()
 {
     auto OUT = state.getRawParameterValue("LEVEL");
@@ -134,7 +126,7 @@ void PunkCompProcessor::updateOutput()
     outputLevel.setGainDecibels(val);
 }
 
-void PunkCompProcessor::updateThreshold()
+void PunkCompProcessor::updateComp()
 {
     auto THRES = state.getRawParameterValue("COMP");
     // Mapping function: y = (x-A)/(B-A) * (D-C) + C
@@ -191,9 +183,6 @@ void PunkCompProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     spec.maximumBlockSize = samplesPerBlock;
     spec.numChannels = getTotalNumOutputChannels();
     spec.sampleRate = sampleRate;
-    
-    inputLevel.prepare(spec);
-    inputLevel.setRampDurationSeconds(0.1f);
     
     comp.prepare(spec);
     comp.setRatio(compressionRatio);
@@ -267,13 +256,11 @@ void PunkCompProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::Mi
         dryWetMix.pushDrySamples(audioBlock);
         
         // Input
-        updateInput();
-        inputLevel.process(juce::dsp::ProcessContextReplacing<float>(audioBlock));
         float peakInput = juce::Decibels::gainToDecibels(buffer.getMagnitude(0, buffer.getNumSamples()));
         
         // Compressor
         updateAttack();
-        updateThreshold();
+        updateComp();
         comp.process(juce::dsp::ProcessContextReplacing<float>(audioBlock));
         float peakOutput = juce::Decibels::gainToDecibels(buffer.getMagnitude(0, buffer.getNumSamples()));
         
