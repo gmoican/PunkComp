@@ -129,10 +129,11 @@ void PunkCompProcessor::updateOutput()
 void PunkCompProcessor::updateComp()
 {
     auto THRES = state.getRawParameterValue("COMP");
-    // Mapping function: y = (x-A)/(B-A) * (D-C) + C
-    // x = {A, B} = {0.0, 10.0}
-    // y = {C, D} = {0.0, -40.0}
-    threshold = THRES->load() / 10.0f * (-40.0f);
+    
+    threshold = juce::jmap(THRES->load(), 0.f, 10.f, -5.f, -25.f);
+    float inputGain = juce::jmap(THRES->load(), 0.f, 10.f, -5.f, 20.f);
+    
+    inputLevel.setGainDecibels(inputGain);
     comp.setThreshold(threshold);
 }
 
@@ -156,24 +157,30 @@ void PunkCompProcessor::updateVoice()
     
     float sampleRate = getSampleRate();
     
-    // ISSUE: Fine tune frequencies and gainFactors...
     switch (voice) {
         case 0:
-            *eq.get<0>().state = *juce::dsp::IIR::Coefficients<float>::makePeakFilter(sampleRate, 700.0f, 0.7071f, 1.5f);
-            *eq.get<1>().state = *juce::dsp::IIR::Coefficients<float>::makeHighShelf(sampleRate, 2000.0f, 0.7071f, 1.0f);
+            *voiceEq.get<0>().state = *juce::dsp::IIR::Coefficients<float>::makePeakFilter(sampleRate, 2430.f, 0.5f, 2.0f);
             break;
         case 1:
-            *eq.get<0>().state = *juce::dsp::IIR::Coefficients<float>::makePeakFilter(sampleRate, 700.0f, 0.7071f, 1.0f);
-            *eq.get<1>().state = *juce::dsp::IIR::Coefficients<float>::makeHighShelf(sampleRate, 2000.0f, 0.7071f, 1.0f);
+            *voiceEq.get<0>().state = *juce::dsp::IIR::Coefficients<float>::makePeakFilter(sampleRate, 2430.f, 0.5f, 1.f);
             break;
         case 2:
-            *eq.get<0>().state = *juce::dsp::IIR::Coefficients<float>::makePeakFilter(sampleRate, 700.0f, 0.7071f, 1.5f);
-            *eq.get<1>().state = *juce::dsp::IIR::Coefficients<float>::makeHighShelf(sampleRate, 2000.0f, 0.7071f, 1.5f);
+            *voiceEq.get<0>().state = *juce::dsp::IIR::Coefficients<float>::makePeakFilter(sampleRate, 2000.f, 0.35f, 2.5f);
             break;
             
         default:
             break;
     };
+}
+
+void PunkCompProcessor::updateState()
+{
+    updateOnOff();
+    updateComp();
+    updateAttack();
+    updateMix();
+    updateVoice();
+    updateOutput();
 }
 
 //==============================================================================
@@ -184,6 +191,9 @@ void PunkCompProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     spec.numChannels = getTotalNumOutputChannels();
     spec.sampleRate = sampleRate;
     
+    inputLevel.prepare(spec);
+    inputLevel.setRampDurationSeconds(0.1f);
+    
     comp.prepare(spec);
     comp.setRatio(compressionRatio);
     comp.setThreshold(threshold);
@@ -192,8 +202,9 @@ void PunkCompProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     
     dryWetMix.prepare(spec);
     
-    eq.prepare(spec);
-    eq.reset();
+    voiceEq.prepare(spec);
+    voiceEq.reset();
+    *voiceEq.get<1>().state = *juce::dsp::IIR::Coefficients<float>::makeHighPass(sampleRate, 10.f);
     
     outputLevel.prepare(spec);
     outputLevel.setRampDurationSeconds(0.1f);
@@ -249,19 +260,19 @@ void PunkCompProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::Mi
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
     
-    updateOnOff();
+    updateState();
     if(on)
     {
         juce::dsp::AudioBlock<float> audioBlock = juce::dsp::AudioBlock<float>(buffer);
         dryWetMix.pushDrySamples(audioBlock);
         
         // Input
+        inputLevel.process(juce::dsp::ProcessContextReplacing<float>(audioBlock));
         float peakInput = juce::Decibels::gainToDecibels(buffer.getMagnitude(0, buffer.getNumSamples()));
         
         // Compressor
-        updateAttack();
-        updateComp();
         comp.process(juce::dsp::ProcessContextReplacing<float>(audioBlock));
+        
         float peakOutput = juce::Decibels::gainToDecibels(buffer.getMagnitude(0, buffer.getNumSamples()));
         
         // Gain reduction meter
@@ -274,17 +285,15 @@ void PunkCompProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::Mi
                 gainReduction.setCurrentAndTargetValue(value);
         }
         
-        // Voice
-        updateVoice();
-        eq.process(juce::dsp::ProcessContextReplacing<float>(audioBlock));
-        
         // Mix
-        updateMix();
         dryWetMix.mixWetSamples(audioBlock);
         
+        // Voice
+        voiceEq.process(juce::dsp::ProcessContextReplacing<float>(audioBlock));
+        
         // Output
-        updateOutput();
         outputLevel.process(juce::dsp::ProcessContextReplacing<float>(audioBlock));
+        
     } else
         gainReduction.setCurrentAndTargetValue(0.0f);
 }

@@ -73,6 +73,7 @@ public:
     void updateAttack();
     void updateMix();
     void updateVoice();
+    void updateState();
     
     void process(float* samples, int numSamples);
 
@@ -83,15 +84,15 @@ private:
     using Compressor = juce::dsp::Compressor<float>;
     using Mix = juce::dsp::DryWetMixer<float>;
     
-    juce::dsp::ProcessorChain<FilterBand, FilterBand> eq;
+    juce::dsp::ProcessorChain<FilterBand, FilterBand> voiceEq;
     
     // Modifiable parameters
     float threshold;
     float attackTime;
-    Mix dryWetMix;
     int voice;
-    Gain outputLevel;
     bool on;
+    Mix dryWetMix;
+    Gain inputLevel, outputLevel;
     
     // Hidden compressor parameters
     Compressor comp;
