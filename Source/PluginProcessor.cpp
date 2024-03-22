@@ -1,16 +1,8 @@
-/*
-  ==============================================================================
-
-    This file contains the basic framework code for a JUCE plugin processor.
-
-  ==============================================================================
-*/
-
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
 //==============================================================================
-PunkCompProcessor::PunkCompProcessor()
+PunkKompProcessor::PunkKompProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
      : AudioProcessor (BusesProperties()
                      #if ! JucePlugin_IsMidiEffect
@@ -24,17 +16,17 @@ PunkCompProcessor::PunkCompProcessor()
 {
 }
 
-PunkCompProcessor::~PunkCompProcessor()
+PunkKompProcessor::~PunkKompProcessor()
 {
 }
 
 //==============================================================================
-const juce::String PunkCompProcessor::getName() const
+const juce::String PunkKompProcessor::getName() const
 {
     return JucePlugin_Name;
 }
 
-bool PunkCompProcessor::acceptsMidi() const
+bool PunkKompProcessor::acceptsMidi() const
 {
    #if JucePlugin_WantsMidiInput
     return true;
@@ -43,7 +35,7 @@ bool PunkCompProcessor::acceptsMidi() const
    #endif
 }
 
-bool PunkCompProcessor::producesMidi() const
+bool PunkKompProcessor::producesMidi() const
 {
    #if JucePlugin_ProducesMidiOutput
     return true;
@@ -52,7 +44,7 @@ bool PunkCompProcessor::producesMidi() const
    #endif
 }
 
-bool PunkCompProcessor::isMidiEffect() const
+bool PunkKompProcessor::isMidiEffect() const
 {
    #if JucePlugin_IsMidiEffect
     return true;
@@ -61,37 +53,37 @@ bool PunkCompProcessor::isMidiEffect() const
    #endif
 }
 
-double PunkCompProcessor::getTailLengthSeconds() const
+double PunkKompProcessor::getTailLengthSeconds() const
 {
     return 0.0;
 }
 
-int PunkCompProcessor::getNumPrograms()
+int PunkKompProcessor::getNumPrograms()
 {
     return 1;   // NB: some hosts don't cope very well if you tell them there are 0 programs,
                 // so this should be at least 1, even if you're not really implementing programs.
 }
 
-int PunkCompProcessor::getCurrentProgram()
+int PunkKompProcessor::getCurrentProgram()
 {
     return 0;
 }
 
-void PunkCompProcessor::setCurrentProgram (int index)
+void PunkKompProcessor::setCurrentProgram (int index)
 {
 }
 
-const juce::String PunkCompProcessor::getProgramName (int index)
+const juce::String PunkKompProcessor::getProgramName (int index)
 {
     return {};
 }
 
-void PunkCompProcessor::changeProgramName (int index, const juce::String& newName)
+void PunkKompProcessor::changeProgramName (int index, const juce::String& newName)
 {
 }
 
 // =========== PARAMETER LAYOUT ====================
-juce::AudioProcessorValueTreeState::ParameterLayout PunkCompProcessor::createParams()
+juce::AudioProcessorValueTreeState::ParameterLayout PunkKompProcessor::createParams()
 {
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
         
@@ -107,26 +99,26 @@ juce::AudioProcessorValueTreeState::ParameterLayout PunkCompProcessor::createPar
 }
 
 // ============ VALUE GETTERS ======================
-float PunkCompProcessor::getGRValue()
+float PunkKompProcessor::getGRValue()
 {
     return gainReduction.getCurrentValue();
 }
 
 // ============ VALUE UPDATERS =====================
-void PunkCompProcessor::updateOnOff()
+void PunkKompProcessor::updateOnOff()
 {
     auto ONOFF = state.getRawParameterValue("ONOFF");
     on = ONOFF->load();
 }
 
-void PunkCompProcessor::updateOutput()
+void PunkKompProcessor::updateOutput()
 {
     auto OUT = state.getRawParameterValue("LEVEL");
     float val = OUT->load();
     outputLevel.setGainDecibels(val);
 }
 
-void PunkCompProcessor::updateComp()
+void PunkKompProcessor::updateComp()
 {
     auto THRES = state.getRawParameterValue("COMP");
     
@@ -137,20 +129,20 @@ void PunkCompProcessor::updateComp()
     comp.setThreshold(threshold);
 }
 
-void PunkCompProcessor::updateAttack()
+void PunkKompProcessor::updateAttack()
 {
     auto ATT = state.getRawParameterValue("ATTACK");
     attackTime = ATT->load();
     comp.setAttack(attackTime);
 }
 
-void PunkCompProcessor::updateMix()
+void PunkKompProcessor::updateMix()
 {
     auto MIX = state.getRawParameterValue("MIX");
     dryWetMix.setWetMixProportion(MIX->load() / 100.0f);
 }
 
-void PunkCompProcessor::updateVoice()
+void PunkKompProcessor::updateVoice()
 {
     auto VOICE = state.getRawParameterValue("VOICE");
     voice = VOICE->load();
@@ -173,7 +165,7 @@ void PunkCompProcessor::updateVoice()
     };
 }
 
-void PunkCompProcessor::updateState()
+void PunkKompProcessor::updateState()
 {
     updateOnOff();
     updateComp();
@@ -184,7 +176,7 @@ void PunkCompProcessor::updateState()
 }
 
 //==============================================================================
-void PunkCompProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
+void PunkKompProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     juce::dsp::ProcessSpec spec;
     spec.maximumBlockSize = samplesPerBlock;
@@ -213,14 +205,14 @@ void PunkCompProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     gainReduction.setCurrentAndTargetValue(0.0f);
 }
 
-void PunkCompProcessor::releaseResources()
+void PunkKompProcessor::releaseResources()
 {
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
-bool PunkCompProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
+bool PunkKompProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
 {
   #if JucePlugin_IsMidiEffect
     juce::ignoreUnused (layouts);
@@ -245,7 +237,7 @@ bool PunkCompProcessor::isBusesLayoutSupported (const BusesLayout& layouts) cons
 }
 #endif
 
-void PunkCompProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
+void PunkKompProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels  = getTotalNumInputChannels();
@@ -299,25 +291,25 @@ void PunkCompProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::Mi
 }
 
 //==============================================================================
-bool PunkCompProcessor::hasEditor() const
+bool PunkKompProcessor::hasEditor() const
 {
     return true; // (change this to false if you choose to not supply an editor)
 }
 
-juce::AudioProcessorEditor* PunkCompProcessor::createEditor()
+juce::AudioProcessorEditor* PunkKompProcessor::createEditor()
 {
-    return new PunkCompEditor (*this);
+    return new PunkKompEditor (*this);
 }
 
 //==============================================================================
-void PunkCompProcessor::getStateInformation (juce::MemoryBlock& destData)
+void PunkKompProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
 }
 
-void PunkCompProcessor::setStateInformation (const void* data, int sizeInBytes)
+void PunkKompProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
@@ -327,5 +319,5 @@ void PunkCompProcessor::setStateInformation (const void* data, int sizeInBytes)
 // This creates new instances of the plugin..
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
-    return new PunkCompProcessor();
+    return new PunkKompProcessor();
 }

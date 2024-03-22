@@ -1,0 +1,8 @@
+[submodule "JUCE"]
+	path = JUCE
+	url = https://github.com/juce-framework/JUCE/
+	branch = develop
+[submodule "cmake"]
+	path = cmake
+	url = https://github.com/sudara/cmake-includes.git
+	branch = main

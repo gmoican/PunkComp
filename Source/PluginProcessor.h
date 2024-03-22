@@ -1,14 +1,11 @@
-/*
-  ==============================================================================
-
-    This file contains the basic framework code for a JUCE plugin processor.
-
-  ==============================================================================
-*/
-
 #pragma once
 
-#include <JuceHeader.h>
+#include <juce_audio_processors/juce_audio_processors.h>
+#include <juce_dsp/juce_dsp.h>
+
+#if (MSVC)
+#include "ipps.h"
+#endif
 
 #define DEFAULT_OUTPUT 0.0f
 #define DEFAULT_COMP 5.0f
@@ -20,12 +17,12 @@
 /**
 */
 
-class PunkCompProcessor  : public juce::AudioProcessor
+class PunkKompProcessor  : public juce::AudioProcessor
 {
 public:
     //==============================================================================
-    PunkCompProcessor();
-    ~PunkCompProcessor() override;
+    PunkKompProcessor();
+    ~PunkKompProcessor() override;
 
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
@@ -103,5 +100,5 @@ private:
     juce::LinearSmoothedValue<float> gainReduction;
 
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PunkCompProcessor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PunkKompProcessor)
 };

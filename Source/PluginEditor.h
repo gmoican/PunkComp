@@ -1,27 +1,19 @@
-/*
-  ==============================================================================
-
-    This file contains the basic framework code for a JUCE plugin editor.
-
-  ==============================================================================
-*/
-
 #pragma once
 
-#include <JuceHeader.h>
 #include "PluginProcessor.h"
-#include "Component/GainReductionMeter.h"
+#include "BinaryData.h"
+#include "GainReductionMeter.h"
 
 #define DEG2RADS 0.0174533f
 
 //==============================================================================
 /**
 */
-class PunkCompEditor  : public juce::AudioProcessorEditor, public juce::Timer
+class PunkKompEditor  : public juce::AudioProcessorEditor, public juce::Timer
 {
 public:
-    PunkCompEditor (PunkCompProcessor&);
-    ~PunkCompEditor() override;
+    PunkKompEditor (PunkKompProcessor&);
+    ~PunkKompEditor() override;
 
     //==============================================================================
     void paint (juce::Graphics&) override;
@@ -67,7 +59,7 @@ private:
     
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
-    PunkCompProcessor& audioProcessor;
+    PunkKompProcessor& audioProcessor;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PunkCompEditor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PunkKompEditor)
 };

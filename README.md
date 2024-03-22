@@ -1,7 +1,7 @@
 
-# PunkComp - A compressor pedal plugin
+# PunkKomp - A compressor pedal plugin
 
-<img src="demo.jpg" width="70%">
+![DemoPhoto](docs/images/demo.jpg)
 
 ## Introduction
 This is a simple vst3/au audio compressor plugin made with <a href="https://juce.com/" target="_blank">JUCE</a> that I build to introduce myself in the JUCE framework. The functionality is inspired by the Koji Comp by Suhr, although the compression behaviour is not the same (yet). The project was mostly used to further my understanding and knowledge of digital signal processing and digital audio effects.
@@ -20,8 +20,7 @@ This is a simple vst3/au audio compressor plugin made with <a href="https://juce
     - Middle: Transparent (flat) frequency response.
     - Right: Offers a boost in the upper midrange and treble frequencies – for a smooth, glassy, top-end sweetness.
     - Here is a graph showing some home measures that I did with which I've imitated the different voices.
-    ![KojiMeasures](kojiVoicesMeasures.png)
+    ![KojiMeasures](docs/images/kojiVoicesMeasures.png)
 
 ## TODO
-- Migrate project to CMake.
 - The compressor implementation uses the JUCE built-in Compressor class. I want to program my own Compressor class to better imitate the behaviour of the Koji Comp.

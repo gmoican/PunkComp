@@ -1,16 +1,8 @@
-/*
-  ==============================================================================
-
-    This file contains the basic framework code for a JUCE plugin editor.
-
-  ==============================================================================
-*/
-
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
 //==============================================================================
-PunkCompEditor::PunkCompEditor (PunkCompProcessor& p)
+PunkKompEditor::PunkKompEditor (PunkKompProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
     // ================= PARAMETERS ====================
@@ -39,18 +31,18 @@ PunkCompEditor::PunkCompEditor (PunkCompProcessor& p)
     setSize (180, 320);
 }
 
-PunkCompEditor::~PunkCompEditor()
+PunkKompEditor::~PunkKompEditor()
 {
 }
 
-void PunkCompEditor::timerCallback()
+void PunkKompEditor::timerCallback()
 {
     grMeter.setLevel(audioProcessor.getGRValue());
     grMeter.repaint();
 }
 
 //==============================================================================
-void PunkCompEditor::paint (juce::Graphics& g)
+void PunkKompEditor::paint (juce::Graphics& g)
 {
     g.drawImageWithin(background, 0, 0, getWidth(), getHeight(), juce::RectanglePlacement::stretchToFit);
         
@@ -102,7 +94,7 @@ void PunkCompEditor::paint (juce::Graphics& g)
     g.drawImageTransformed(knobImage, knobRotation(mixRadians, 112.5, 91));
 }
 
-void PunkCompEditor::resized()
+void PunkKompEditor::resized()
 {
     // Upper row
     voiceSwitch.setBounds(74, 16, 32, 14);
@@ -120,7 +112,7 @@ void PunkCompEditor::resized()
     onToggle.setBounds(65, 240, 50, 50);
 }
 
-void PunkCompEditor::setSliderComponent(juce::Slider &slider, std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> &sliderAttachment, juce::String paramName, juce::String style){
+void PunkKompEditor::setSliderComponent(juce::Slider &slider, std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> &sliderAttachment, juce::String paramName, juce::String style){
     sliderAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.state, paramName, slider);
     if (style == "Lin")
     {
@@ -134,13 +126,13 @@ void PunkCompEditor::setSliderComponent(juce::Slider &slider, std::unique_ptr<ju
     slider.setAlpha(0);
 }
 
-void PunkCompEditor::setToggleComponent(juce::ToggleButton& button, std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment>& buttonAttachment, juce::String paramName){
+void PunkKompEditor::setToggleComponent(juce::ToggleButton& button, std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment>& buttonAttachment, juce::String paramName){
     buttonAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(audioProcessor.state, paramName, button);
     addAndMakeVisible(button);
     button.setAlpha(0);
 }
 
-juce::AffineTransform PunkCompEditor::knobRotation(float radians, float posX, float posY){
+juce::AffineTransform PunkKompEditor::knobRotation(float radians, float posX, float posY){
     juce::AffineTransform t;
     t = t.rotated(radians, 46.0f, 46.0f);
     t = t.scaled(0.48f);
@@ -148,7 +140,7 @@ juce::AffineTransform PunkCompEditor::knobRotation(float radians, float posX, fl
     return t;
 }
 
-juce::AffineTransform PunkCompEditor::imageTransforms(float scaleFactor, float posX, float posY) {
+juce::AffineTransform PunkKompEditor::imageTransforms(float scaleFactor, float posX, float posY) {
     juce::AffineTransform t;
     t = t.scaled(scaleFactor);
     t = t.translated(posX, posY);
