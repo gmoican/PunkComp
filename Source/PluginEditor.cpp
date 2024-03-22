@@ -5,6 +5,8 @@
 PunkKompEditor::PunkKompEditor (PunkKompProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
+    juce::ignoreUnused(audioProcessor);
+    
     // ================= PARAMETERS ====================
     setSliderComponent(voiceSwitch, voiceSwitchAttachment, "VOICE", "Lin");
     

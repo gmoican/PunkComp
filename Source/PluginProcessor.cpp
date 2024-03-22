@@ -71,15 +71,18 @@ int PunkKompProcessor::getCurrentProgram()
 
 void PunkKompProcessor::setCurrentProgram (int index)
 {
+    juce::ignoreUnused(index);
 }
 
 const juce::String PunkKompProcessor::getProgramName (int index)
 {
+    juce::ignoreUnused(index);
     return {};
 }
 
 void PunkKompProcessor::changeProgramName (int index, const juce::String& newName)
 {
+    juce::ignoreUnused(index, newName);
 }
 
 // =========== PARAMETER LAYOUT ====================
@@ -239,6 +242,8 @@ bool PunkKompProcessor::isBusesLayoutSupported (const BusesLayout& layouts) cons
 
 void PunkKompProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
+    juce::ignoreUnused(midiMessages);
+    
     juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
@@ -307,12 +312,16 @@ void PunkKompProcessor::getStateInformation (juce::MemoryBlock& destData)
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
+    
+    juce::ignoreUnused(destData);
 }
 
 void PunkKompProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
+    
+    juce::ignoreUnused(data, sizeInBytes);
 }
 
 //==============================================================================
