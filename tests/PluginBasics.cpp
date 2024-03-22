@@ -20,7 +20,7 @@ TEST_CASE ("Plugin instance", "[instance]")
     SECTION ("name")
     {
         CHECK_THAT (testPlugin.getName().toStdString(),
-            Catch::Matchers::Equals ("Punk Comp"));
+            Catch::Matchers::Equals ("Punk Komp"));
     }
 }
 
