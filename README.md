@@ -1,5 +1,5 @@
-
 # PunkKomp - A compressor pedal plugin
+[![PunkKomp multiplatform build](https://github.com/gmoican/PunkComp/actions/workflows/main.yml/badge.svg)](https://github.com/gmoican/PunkComp/actions/workflows/main.yml)
 
 ![DemoPhoto](docs/images/demo.jpg)
 
